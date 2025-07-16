@@ -23,6 +23,6 @@ const userSchema=new mongoose.Schema({
 
 })
 
-const User=mongoose.model("User",userSchema,"dummy");
+const User=mongoose.model("User",userSchema);  //it can take 3rd argument as a collection name you want to store in data that collection name
 
 module.exports={User ,};
