@@ -3,6 +3,8 @@ const mongoose=require("mongoose");
 //it is used to validate email, url, password, etc.
 //rather than defining validate function in each field we can use validator package
 const validator=require("validator");
+const bcrypt=require("bcrypt");
+const jwt=require("jsonwebtoken")
 
 
 const userSchema=new mongoose.Schema({
@@ -35,14 +37,7 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
         minLength:8,
-        maxLength:32,
-          validate(value){
-            // At least one uppercase, one lowercase, one digit, one special char
-            const regex= /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,32}$/;
-            if(!regex.test(value)){
-                throw new Error("Password must be 8-32 characters and include uppercase, lowercase, number, and special character.");
-            }
-          }
+          
     },
     age:  {   
         type:Number,
@@ -98,9 +93,30 @@ const userSchema=new mongoose.Schema({
         }
     },
 
-},{
+  },
+  {
     timestamps:true, //to add createdAt and updatedAt fields automatically
-})
+});
+
+userSchema.methods.getJWT=async function(){
+    const user=this;
+   const token= await jwt.sign({_id:user._id},"DEV@Connect786",
+    {expiresIn:'1d'});
+
+    return token;
+}
+
+userSchema.methods.validatePassword=async function (passwordInputByUser) {
+    const user=this;
+    const pasaswordHash=user.password;
+
+    const isPasswordValid=await bcrypt.compare(
+        passwordInputByUser,
+        pasaswordHash
+    );
+
+    return isPasswordValid;
+}
 
 const User=mongoose.model("User",userSchema);  //it can take 3rd argument as a collection name you want to store in data that collection name
 
