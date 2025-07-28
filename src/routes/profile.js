@@ -3,6 +3,7 @@ const profileRouter=express.Router();
 const {userAuth}=require("../middlewares/auth");
 const {User}=require("../models/user.js");
 const { validateEditProfileData } = require("../utils/validation.js");
+const bcrypt = require("bcrypt");
 
 
 
@@ -44,34 +45,46 @@ profileRouter.patch("/profile/edit",userAuth, async (req,res)=>{
  
 });
 
-profileRouter.patch("/profile/password",userAuth,async (req,res)=>{
+profileRouter.patch("/profile/password", userAuth, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
 
-  //making forget password or edit password api
-  try{
-    const loggedInUser=req.user;
-    const {oldPassword,newPassword}=req.body;
-
-    if(!oldPassword || !newPassword){
-      return res.status(400).send("Please provide old and new password");
+    // Check for required fields
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Both current and new passwords are required." });
+    }
+   const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,32}$/;
+    if (!strongPasswordRegex.test(newPassword)) {
+      return res.status(400).json({ message: "Weak password." });
     }
 
-    const isMatch=await loggedInUser.comparePassword(oldPassword);
-    if(!isMatch){
-      return res.status(400).send("Old password is incorrect");
+    if (currentPassword === newPassword) {
+  return res.status(400).json({ message: "New password must be different from the current password." });
+}
+
+
+    // Get user object from req.user (already populated by userAuth)
+    const user = req.user;
+
+    // Compare current password with hashed password in DB
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Current password is incorrect." });
     }
 
-    loggedInUser.password=newPassword;
-    await loggedInUser.save();
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    res.json({
-      message : "Your Password updated successfully",
-      data : loggedInUser
-    });
+    // Update password in DB
+    user.password = hashedNewPassword;
+    await user.save();
 
-  } catch(err){
-    res.status(400).send("ERROR : "+err.message);
-  }
+    res.status(200).json({ message: "Password updated successfully." });
+  } catch (err) {
+    res.status(400).send("Error updating password:"+err.message);
   
-})
+  }
+});
+
 
 module.exports=profileRouter;

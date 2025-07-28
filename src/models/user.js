@@ -18,8 +18,8 @@ const userSchema=new mongoose.Schema({
     lastName: {
         type:String,
          minLength:3,
-        maxLength:20,
-        trim:true, //to remove extra spaces from start and end
+         maxLength:20,
+         trim:true, //to remove extra spaces from start and end
     },
     emailId:  {
         type:String,
@@ -36,9 +36,8 @@ const userSchema=new mongoose.Schema({
     password: {
         type:String,
         required:true,
-        minLength:8,
-          
-    },
+    
+},
     age:  {   
         type:Number,
         min: [18, "Age must be 18 or older"], //to ensure age is at least 18
@@ -65,24 +64,14 @@ const userSchema=new mongoose.Schema({
                 throw new Error("Profile picture URL is not valid");
             }
         }
-//     validator: function (value) {
-//       // Basic URL regex check (simplified, not overly strict)
-//       return /^(https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*|\/[\w\-./]+)$/.test(value);
- 
-//     },
-//     message: props => `${props.value} is not a valid URL for profile picture`
-//   }
+
 },
     bio:      {
         type:String,
         trim:true, //to remove extra spaces from start and end
         default:"This is a default bio of the user!!", //to set default value to empty string
          maxLength:500, //to limit the length of bio to 200 characters 
-    //     validate(value){
-    //         if(value.length>500){
-    //             throw new Error("Bio cannot be more than 500 characters");
-    //         }                                                
-    // } 
+    
 },    
     skills:    {
         type:[String],
@@ -91,12 +80,13 @@ const userSchema=new mongoose.Schema({
                 throw new Error("You can only add up to 10 skills");
             }
         }
-    },
-
+    }, 
   },
   {
     timestamps:true, //to add createdAt and updatedAt fields automatically
 });
+
+
 
 userSchema.methods.getJWT=async function(){
     const user=this;
