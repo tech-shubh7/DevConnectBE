@@ -1,28 +1,28 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
 
 async function connectDB() {
 
- try{
-    await mongoose.connect("mongodb://127.0.0.1:27017/DevTinder");
-    
-    // console.log("Connected to MongoDB");
-    // const db=mongoose.connection;
-    // const collection=db.collection("users");
+   try {
+      await mongoose.connect(process.env.DB_CONNECTION_STRING);
 
-    // await collection.insertOne({name:"shubh",age:22,gender:"male"})
-    // console.log("Data inserted successfully");
+      // console.log("Connected to MongoDB");
+      // const db=mongoose.connection;
+      // const collection=db.collection("users");
 
-    // const result = await collection.deleteMany({name:"shubh"});
-    // console.log("deleted documents = ", result.deletedCount);
+      // await collection.insertOne({name:"shubh",age:22,gender:"male"})
+      // console.log("Data inserted successfully");
 
-  } catch(err){
-      console.log("error while running code",err);
+      // const result = await collection.deleteMany({name:"shubh"});
+      // console.log("deleted documents = ", result.deletedCount);
+
+   } catch (err) {
+      console.log("error while running code", err);
    }
 }
 
- 
 
 
 
-module.exports={connectDB,}
+
+module.exports = { connectDB, }

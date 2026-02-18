@@ -1,4 +1,5 @@
-node_modules/
-practise/
-dist/
-
+node_modules
+practise
+dist
+.env
+Untitled-1.sql

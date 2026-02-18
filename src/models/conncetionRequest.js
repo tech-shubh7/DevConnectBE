@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const connectionRequestSchema=new mongoose.Schema({
-    fromUserId: {       
+const connectionRequestSchema = new mongoose.Schema({
+    fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
@@ -13,29 +13,29 @@ const connectionRequestSchema=new mongoose.Schema({
     },
     status: {
         type: String,
-        requird:true,    
-        enum:{
-            values: ["interested","ignored","accepted", "rejected"],
+        requird: true,
+        enum: {
+            values: ["interested", "ignored", "accepted", "rejected"],
             message: `{VALUE} is not a valid status`
+        },
     },
- },
-  
+
 },
- {
-     timestamps:true,
- }
+    {
+        timestamps: true,
+    }
 );
 
 //for query optimization and making query fast searching fast
-connectionRequestSchema.index({fromUserId:1,toUserId:1});
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
 
 connectionRequestSchema.pre("save", function (next) {
-   
-    const conncetionRequest=this;
+
+    const conncetionRequest = this;
     //check if the fromUserId and toUserId are the same
     if (conncetionRequest.fromUserId.toString() === conncetionRequest.toUserId.toString()) {
         throw new Error("You cannot send a connection request to yourself.");
-    }     
+    }
     next();
 
 });
