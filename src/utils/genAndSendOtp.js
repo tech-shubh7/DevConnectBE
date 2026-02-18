@@ -1,9 +1,9 @@
-// utils/sendOtpViaEmail.js
+
 const nodemailer = require("nodemailer");
 const { User } = require("../models/user");
-const bcrypt = require("bcrypt");  // ✅ Correct - default import
+const bcrypt = require("bcrypt");
 
-// Pure utility function – returns info to controller, does not send HTTP responses
+
 async function sendOtpViaEmail(email) {
   try {
     console.log(email);

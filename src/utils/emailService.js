@@ -1,4 +1,4 @@
-//  utils/emailService.js
+
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -20,4 +20,4 @@ const sendInterestEmail = async (toEmail, interestedUserName) => {
   }
 };
 
-module.exports = { sendInterestEmail }; // CommonJS export
+module.exports = { sendInterestEmail }; 
